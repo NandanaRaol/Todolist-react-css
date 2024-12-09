@@ -1,10 +1,16 @@
-import { useState } from "react";
+import {useState,useEffect} from "react";
 import './styles.css';
 
-const ActivityLog = () => {
-  const [tasks, setTasks] = useState([]);
-  const [newtasks, setNewtasks] = useState("");
-
+const ActivityLog=()=>{
+    const [tasks, setTasks]=useState(()=>
+        {
+        const savedTasks=localStorage.getItem('tasks');
+        return savedTasks?JSON.parse(savedTasks):[];
+      });
+      const [newtasks, setNewtasks] = useState("");
+      useEffect(()=>{
+        localStorage.setItem('tasks',JSON.stringify(tasks));
+      },[tasks]);
   return (
     <div className="app-container">
       <h1 className="heading">TODO LIST</h1>
@@ -21,7 +27,7 @@ const ActivityLog = () => {
           onClick={() => {
             if (newtasks.trim()) {
               const newTask = {
-                id: Date.now(),  // Use Date.now() to generate a unique id
+                id: Date.now(),
                 label: newtasks.trim(),
               };
               setTasks([...tasks, newTask]);
